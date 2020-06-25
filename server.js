@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');// initialize our express app
 const port = 4000;
 const app = express();
+const posts = require('./routes/posts.routes')
 require('dotenv/config')
 
 const MongoClient = require('mongodb').MongoClient;
@@ -14,9 +15,7 @@ client.connect(err => {
 });
 
 //Middlewares
-app.use('/posts', () => {
-  console.log('hello, this is middleware')
-})
+app.use('/posts', posts)
 
 
 app.get('/', (req, res) => {
@@ -24,10 +23,7 @@ app.get('/', (req, res) => {
   res.send('We are on Home');
 })
 
-app.get('/posts', (req, res) => {
-  // console.log(req.params);
-  res.send('We are on posts');
-})
+
 
 
 app.listen(port, () => {
