@@ -10,6 +10,7 @@ const uri = process.env.DB_CONNECTION;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
   const collection = client.db("test").collection("devices");
+  console.log('mongo');
   // perform actions on the collection object
   client.close();
 });
@@ -22,9 +23,6 @@ app.get('/', (req, res) => {
   console.log(req.params);
   res.send('We are on Home');
 })
-
-
-
 
 app.listen(port, () => {
     console.log('Server is up and running on port numner ' + port);
