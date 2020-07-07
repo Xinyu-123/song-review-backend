@@ -1,29 +1,25 @@
 const express = require('express');
 const bodyParser = require('body-parser');// initialize our express app
-const port = 4000;
 const app = express();
-const posts = require('./routes/posts.routes')
+const songs = require('./routes/song.routes');
+const users = require('./routes/user.routes');
 require('dotenv/config')
 
-const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.DB_CONNECTION;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  console.log('mongo');
-  // perform actions on the collection object
-  client.close();
-});
+var mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.DB_CONNECTION, {useNewUrlParser: true, useUnifiedTopology: true});
 
 //Middlewares
-app.use('/posts', posts)
+app.use('/uploads',express.static('uploads'))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use('/api/songs', songs);
+app.use('/api/users', users)
 
 
-app.get('/', (req, res) => {
-  console.log(req.params);
-  res.send('We are on Home');
-})
-
+const port = process.env.PORT || 4000;
 app.listen(port, () => {
-    console.log('Server is up and running on port numner ' + port);
+    console.log('Server is up and running on port number ' + port);
 });
+
+
