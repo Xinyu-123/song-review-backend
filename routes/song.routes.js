@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 })
 
 const fileFilter = (req, file, cb) => {
-    if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/gif' || file.mimetype === 'image/png'){
+    if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/gif' || file.mimetype === 'audio/mpeg'){
         cb(null, true);
     }else{
         cb(null, false);
@@ -26,7 +26,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 5
+        fileSize: 1024 * 1024 * 20
     },
     fileFilter: fileFilter
 })
@@ -83,10 +83,14 @@ router.get('/song', (req,res) => {
     })
 })
 
-router.post('/', upload.single('song_image'),(req,res) => {
-    req.body.song_image = req.file.path;
-    console.log(req.body.created_by);
-    // console.log('body', req.body);
+router.post('/', upload.fields([
+    {name: 'audio_file', maxCount: 1},
+    {name: 'song_image', maxCount: 1}
+]),(req,res) => {
+    console.log(req.files.song_image[0]);
+    req.body.song_image = req.files.song_image[0].path;
+    req.body.audio_file = req.files.audio_file[0].path;
+
     let song_created;
     User.findOne({_id: req.body.created_by}, (err, user) => {
         req.body.created_by_username = user.username;
