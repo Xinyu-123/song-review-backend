@@ -31,28 +31,56 @@ const upload = multer({
     fileFilter: fileFilter
 })
 
-router.get('/search', async (req,res) => {
-    console.log(req.query.search);
-    
+router.post('/search', async (req,res) => {
+
+    let search_fields = [];
+    let songList = [];
+
     if(req.query.search){
         const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-        Song.find({name:regex}, (err, songs) => {
+        for(let i = 0; i < req.body.fields.length; i++){
+            let search = {[req.body.fields[i]]: regex}
+            search_fields.push(search);
+        }
+
+        Song.find({$or:search_fields}, (err, songs) => {
             if(err){
                 console.log(err);
             }
-
-            res.json(songs);
+            if(songs){
+                songs.forEach(song => {
+                    if(song.rating >= req.body.rating){
+                        songList.push(song);
+                    }
+                })
+            }
             
-        })
+            // songs.sort({rating: -1});
+            res.json(songList);
+            
+        }).sort({rating: -1})
     }else{
         Song.find({}, (err, songs) => {
             if(err){
                 console.log(err)
             }
-            res.json(songs);
-        })
+            songs.forEach(song => {
+                console.log(`ratings: ${song.rating} and ${req.body.rating}`)
+                if(song.rating >= req.body.rating){
+                    songList.push(song);
+                }
+            })
+            // songs.sort({rating: -1});
+            res.json(songList);
+        }).sort({rating: -1})
     }
     
+})
+
+router.get('/song', (req,res) => {
+    Song.findOne({_id: req.query.id}, (err, song) => {
+        res.json(song);
+    })
 })
 
 router.post('/', upload.single('song_image'),(req,res) => {
@@ -61,11 +89,8 @@ router.post('/', upload.single('song_image'),(req,res) => {
     // console.log('body', req.body);
     let song_created;
     User.findOne({_id: req.body.created_by}, (err, user) => {
-        console.log(user);
         req.body.created_by_username = user.username;
-        console.log(req.body);
         const song = new Song(req.body)
-        console.log(song);
         song.save()
         .then(data => {
             console.log('saved');
@@ -89,7 +114,7 @@ router.post('/', upload.single('song_image'),(req,res) => {
 
 router.get('/', async (req, res) => {
     // console.log(req.params);
-    let songs = await Song.find();
+    let songs = await Song.find().sort({rating: -1});
     // console.log(songs);
     res.json(songs);
 })

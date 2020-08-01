@@ -57,7 +57,7 @@ router.post('/login', (req, res) => {
                     is_admin: user.is_admin
                 }
                 let token = jwt.sign(payload, process.env.SECRET_KEY, {
-                    expiresIn: 1440
+                    expiresIn: 5000
                 })
                 res.json({token: token});
             }else {
@@ -83,7 +83,6 @@ router.post('/username', (req,res) => {
 
 router.get('/profile', (req,res) => {
     let decoded = jwt.verify(req.headers['authorization'], process.env.SECRET_KEY);
-
     User.findOne({
         _id: decoded._id
     }).then(user => {

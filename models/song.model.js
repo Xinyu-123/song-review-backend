@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { ObjectID } = require('mongodb');
+const { ObjectID, Decimal128, Double } = require('mongodb');
 const Schema = mongoose.Schema;
 
 let date = new Date();
@@ -33,6 +33,13 @@ const SongSchema = new Schema({
 
     rating: {
         type: Number,
+        default: 0,
+        max: 5,
+        min: 0
+    },
+
+    number_of_ratings: {
+        type: Number,
         default: 0
     },
 
@@ -44,6 +51,11 @@ const SongSchema = new Schema({
     created_by_username: {
         type: String,
         required: true
+    },
+
+    audio_file: {
+        type: String,
+        required: false
     }
 
 })
