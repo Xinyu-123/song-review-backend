@@ -17,9 +17,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 
-app.use('/api/songs', songs);
-app.use('/api/users', users);
-app.use('/api/reviews', reviews);
+app.use('/songs', songs);
+app.use('/users', users);
+app.use('/reviews', reviews);
 
 
 const port = process.env.NODE_ENV === 'production' ? (process.env.PORT || 80) : 4000;
