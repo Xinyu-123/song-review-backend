@@ -8,7 +8,7 @@ require('dotenv/config')
 
 var mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.DB_CONNECTION, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb+srv://xdong82:3bAkrvlTsXCHWqVD@cluster0-pxsle.mongodb.net/Music2?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
 
 const router = express.Router();
 //Middlewares
