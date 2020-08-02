@@ -1,7 +1,7 @@
 const express = require('express');
 const User = require('../models/user.model')
 const jwt = require('jsonwebtoken');
-// const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const multer = require('multer');
 const { db } = require('../models/user.model');
 
@@ -24,15 +24,15 @@ router.post('/register', upload.none(), (req, res) => {
         username: req.body.username
     }).then(user => {
         if(!user){
-            // bcrypt.hash(req.body.password, 10, (err, hash) => {
-            //     userData.password = hash;
-            //     User.create(userData).then(user => {
-            //         res.json({ status: user.username + ' Registered!'});
-            //     })
-            //     .catch(err => {
-            //         res.send('error ' + err);
-            //     })
-            // })
+            bcrypt.hash(req.body.password, 10, (err, hash) => {
+                userData.password = hash;
+                User.create(userData).then(user => {
+                    res.json({ status: user.username + ' Registered!'});
+                })
+                .catch(err => {
+                    res.send('error ' + err);
+                })
+            })
         }else{
             res.json({error: 'User already exists'});
         }
@@ -48,21 +48,21 @@ router.post('/login', (req, res) => {
         username: req.body.username
     }).then(user => {
         if(user){
-            // if(bcrypt.compareSync(req.body.password, user.password)) {
-            //     const payload = {
-            //         _id: user._id,
-            //         username: user.username,
-            //         password: user.password,
-            //         date_created: user.date_created,
-            //         is_admin: user.is_admin
-            //     }
-            //     let token = jwt.sign(payload, 'BANANAS', {
-            //         expiresIn: 5000
-            //     })
-            //     res.json({token: token});
-            // }else {
-            //     res.json({error: 'User does not exist'});
-            // }
+            if(bcrypt.compareSync(req.body.password, user.password)) {
+                const payload = {
+                    _id: user._id,
+                    username: user.username,
+                    password: user.password,
+                    date_created: user.date_created,
+                    is_admin: user.is_admin
+                }
+                let token = jwt.sign(payload, 'BANANAS', {
+                    expiresIn: 5000
+                })
+                res.json({token: token});
+            }else {
+                res.json({error: 'User does not exist'});
+            }
         } else {
             res.json({error: 'User does not exist'});
         }

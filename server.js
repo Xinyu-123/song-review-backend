@@ -1,10 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');// initialize our express app
 const app = express();
+const cors = require('cors');
 const songs = require('./routes/song.routes');
 const users = require('./routes/user.routes');
 const reviews = require('./routes/review.routes');
-require('dotenv/config')
 
 var mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
@@ -15,6 +15,7 @@ const router = express.Router();
 app.use('/uploads',express.static('uploads'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cors());
 
 app.use('/api/songs', songs);
 app.use('/api/users', users);
