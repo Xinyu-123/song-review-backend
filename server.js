@@ -8,18 +8,18 @@ const reviews = require('./routes/review.routes');
 
 var mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb+srv://xdong82:3bAkrvlTsXCHWqVD@cluster0-pxsle.mongodb.net/Music2?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(process.env.DB_CONNECTION, {useNewUrlParser: true, useUnifiedTopology: true});
 
 const router = express.Router();
 //Middlewares
-app.use('/uploads',express.static('uploads'))
+app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 
-app.use('/songs', songs);
-app.use('/users', users);
-app.use('/reviews', reviews);
+app.use('/api/songs', songs);
+app.use('/api/users', users);
+app.use('/api/reviews', reviews);
 
 
 const port = process.env.NODE_ENV === 'production' ? (process.env.PORT || 80) : 4000;
